@@ -74,6 +74,9 @@ fn term_to_python<'a>(py: Python, rdflib: &'a PyModule, node: Term) -> PyResult<
     };
 
     let res: &PyAny = match &node {
+        Term::Triple(_) => {
+            panic!("Nested triples not supported")
+        }
         Term::NamedNode(uri) => {
             let mut uri = uri.to_string();
             uri.remove(0);
