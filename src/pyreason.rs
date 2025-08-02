@@ -174,7 +174,7 @@ impl PyReasoner {
                     Err(e) => return Err(PyReasoningError(e).into()),
                 };
             }
-            self.reasoner.load_triples(triples.into());
+            self.reasoner.load_triples(&triples.into());
             Ok(())
         })
     }

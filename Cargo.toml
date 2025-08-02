@@ -40,6 +40,9 @@ anyhow = "1.0.60"
 pyo3 = { version = "0.17", features = ["extension-module", "abi3-py37"]}
 clap = { version = "4.3.10", features = ["derive"] }
 
+[patch.crates-io]
+oxrdf = { git = "https://github.com/oxigraph/oxigraph", branch = "main" }
+
 [profile.release]
 debug = true
 

@@ -202,7 +202,7 @@ impl Reasoner {
     }
 
     /// Load in a vector of triples
-    pub fn load_triples(&mut self, mut triples: Arc<Vec<Triple>>) {
+    pub fn load_triples(&mut self, triples: &Arc<Vec<Triple>>) {
         self.input.sort();
         let mut trips: Vec<(URI, (URI, URI))> = triples
             .iter()
