@@ -32,3 +32,4 @@ dist/
 reasonable.egg-info
 .cargo
 .python-version
+.aider*

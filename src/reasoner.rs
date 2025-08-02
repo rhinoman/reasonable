@@ -21,6 +21,7 @@ use std::fs;
 use std::io::BufReader;
 use std::io::{Error, ErrorKind};
 use std::rc::Rc;
+use std::sync::Arc;
 
 /// Structured errors that occur during reasoning
 pub struct ReasoningError {
@@ -201,7 +202,7 @@ impl Reasoner {
     }
 
     /// Load in a vector of triples
-    pub fn load_triples(&mut self, mut triples: Vec<Triple>) {
+    pub fn load_triples(&mut self, mut triples: Arc<Vec<Triple>>) {
         self.input.sort();
         let mut trips: Vec<(URI, (URI, URI))> = triples
             .iter()
