@@ -955,23 +955,27 @@ impl Reasoner {
                     &owl_disjoint_with,
                     |&c1, &inst, &c2| (c2, (c1, inst)),
                 );
+                let mut cax_dw_2_errors = Vec::new();
                 cax_dw_2.from_join(
                     &self.rdf_type_inv.borrow(),
                     &cax_dw_1,
                     |&c2, &inst2, &(c1, inst1)| {
-                        //if inst1 == inst2 && inst1 > 0 && inst2 > 0 {
-                        //    let msg = format!(
-                        //        "inst {} is both {} and {} (disjoint classes)",
-                        //        self.to_u(inst1),
-                        //        self.to_u(c1),
-                        //        self.to_u(c2)
-                        //    );
-                        //    self.add_error("cax-dw".to_string(), msg);
-                        //}
+                        if inst1 == inst2 && inst1 > 0 && inst2 > 0 {
+                            let msg = format!(
+                                "inst {} is both {} and {} (disjoint classes)",
+                                self.to_u(inst1),
+                                self.to_u(c1),
+                                self.to_u(c2)
+                            );
+                            cax_dw_2_errors.push(("cax-dw".to_string(), msg));
+                            //self.add_error("cax-dw".to_string(), msg);
+                        }
                         (c2, inst1)
                     },
                 );
-
+                for (code, msg) in cax_dw_2_errors {
+                    self.add_error(code, msg);
+                }
                 // prp-pdw
                 // T(?p1, owl:propertyDisjointWith, ?p2)
                 // T(?x, ?p1, ?y)
