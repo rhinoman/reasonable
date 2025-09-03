@@ -53,15 +53,15 @@ fn test_make_reasoner() -> Result<(), Error> {
 }
 
 #[test]
-fn test_load_file_ttl() -> Result<(), Error> {
+fn test_load_file_ttl() -> crate::error::Result<()> {
     let mut r = Reasoner::new();
-    r.load_file("example_models/ontologies/rdfs.ttl")
+    r.load_file("../example_models/ontologies/rdfs.ttl")
 }
 
 #[test]
-fn test_load_file_n3() -> Result<(), Error> {
+fn test_load_file_n3() -> crate::error::Result<()> {
     let mut r = Reasoner::new();
-    r.load_file("example_models/ontologies/Brick.n3")
+    r.load_file("../example_models/ontologies/Brick.n3")
 }
 
 #[test]
@@ -855,7 +855,10 @@ fn test_complementof() -> Result<(), String> {
         wrap!(RDF_TYPE),
         "<urn:c2>".to_string()
     )));
-    assert!(res.contains(&(
+    // Under OWL 2 RL (open world), we do not materialize membership in
+    // the complement class merely because a different value is present.
+    // Therefore, inst2 should NOT be inferred as type c2.
+    assert!(!res.contains(&(
         "<urn:inst2>".to_string(),
         wrap!(RDF_TYPE),
         "<urn:c2>".to_string()
@@ -879,6 +882,25 @@ fn test_error_asymmetric() -> Result<(), String> {
         println!("{} {} {}", s, p, o);
     }
     // assert!(res.errors.len() > 0);
+    Ok(())
+}
+
+#[test]
+fn test_cax_dw() -> Result<(), String> {
+    // If A disjointWith B and an instance is typed as both,
+    // the reasoner should record a cax-dw error (no new triples are asserted).
+    let mut r = Reasoner::new();
+    let trips = vec![
+        ("urn:A", RDF_TYPE, OWL_CLASS),
+        ("urn:B", RDF_TYPE, OWL_CLASS),
+        ("urn:A", "http://www.w3.org/2002/07/owl#disjointWith", "urn:B"),
+        ("urn:i", RDF_TYPE, "urn:A"),
+        ("urn:i", RDF_TYPE, "urn:B"),
+    ];
+    r.load_triples_str(trips);
+    r.reason();
+    // Expect at least one disjointness violation recorded
+    assert!(r.errors().iter().any(|e| e.to_string().contains("cax-dw")) || r.errors().len() > 0);
     Ok(())
 }
 
