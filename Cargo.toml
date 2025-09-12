@@ -22,7 +22,7 @@ edition = "2021"
 rdf = "0.1.4"
 rio_turtle = "0.8.5"
 rio_api = "0.8.5"
-oxrdf = { version = "0.3.0-beta.2", features = ["rdf-12"] }
+oxrdf = { version = "0.3.0-beta.3", features = ["rdf-12"] }
 farmhash = "1.1.5"
 datafrog = "2.0.1"
 roaring = "0.5.2"
